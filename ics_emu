@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pcount=$(pgrep -c ${0##*/})
+if [ $pcount -ne 1 ]; then
+  echo $pcount
+  exit
+else
+  rm $ANDROID_SDK_HOME/.android/avd/ICS_86.avd/*.lock
+fi
+# Run my Android ICS device on emulator
+/home/farzeen/Apps/android-sdk-linux/tools/emulator @ICS_86 -no-boot-anim
