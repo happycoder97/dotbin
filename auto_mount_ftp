@@ -1,0 +1,20 @@
+#!/bin/bash
+
+function try_and_mount() {
+
+  IP="$1"
+  PORT="$2"
+
+  nc -z -w1 $IP $PORT
+  if [ $? -eq 0 ]; then
+    printf "anonymous\n\n" | gvfs-mount "ftp://$IP:$PORT/" >/dev/null
+    echo "Mounted ftp://$IP:$PORT"
+  fi
+
+}
+
+trap "exit" INT
+for IP in 192.168.1.{1..20}; do
+  try_and_mount "$IP" "8888" &
+done
+sleep 2s
