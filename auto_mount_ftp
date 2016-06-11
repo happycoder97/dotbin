@@ -17,4 +17,4 @@ trap "exit" INT
 for IP in 192.168.1.{1..20}; do
   try_and_mount "$IP" "8888" &
 done
-sleep 2s
+sleep 1s
