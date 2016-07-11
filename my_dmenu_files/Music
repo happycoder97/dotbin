@@ -14,7 +14,7 @@ if [ ! -d $MUSIC_DIR ]; then
 fi
 
 IFS=$'\n'
-MUSICS=( $(find "${MUSIC_DIR[@]}" -iname "*.mp3" -o -iname "*.opus") )
+MUSICS=( $(find "${MUSIC_DIR[@]}" -iname "*.mp3" -o -iname "*.opus" -o -iname "*.webm" -o -iname "*.m4a") )
 
 if [ -z "$MUSICS" ]; then
   $DMENU ${DMENU_OPTS[@]} -p "No musics found in: $MUSIC_DIR" <&-
