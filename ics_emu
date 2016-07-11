@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EMU="/home/farzeen/Apps/android-sdk-linux/tools/emulator"
+
 pcount=$(pgrep -c ${0##*/})
 if [ $pcount -ne 1 ]; then
   echo $pcount
@@ -8,4 +10,9 @@ else
   rm $ANDROID_SDK_HOME/.android/avd/ICS_86.avd/*.lock
 fi
 # Run my Android ICS device on emulator
-/home/farzeen/Apps/android-sdk-linux/tools/emulator @ICS_86 -no-boot-anim
+
+if [ -z "$1" ]; then # There is no argument
+    $EMU @ICS_86
+else
+    $EMU @ICS_86 -camera-back "$1"
+fi
