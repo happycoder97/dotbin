@@ -1,0 +1,45 @@
+#!/bin/python
+
+import re
+import requests
+import sys
+import subprocess
+
+# Site url is the longest and extension is the shortest argument
+if len(sys.argv[1]) > len(sys.argv[2]):
+    site_url  = sys.argv[1]
+    extension = sys.argv[2]
+else:
+    site_url  = sys.argv[2]
+    extension = sys.argv[1]
+
+#The [0][0] is to select the first paranthesis itself, inside the first paranthesis
+base_url = re.findall(r'(https?://[^ ]+?(/|$))',site_url)[0][0]
+parent_dir_url = re.findall(r'(https?://[^ ]+\/)',site_url)[0]
+
+# get the response
+resp = requests.get(site_url)
+
+# get all matching href's ending with given ext
+links_match = re.findall(r"=(['\"])([^ ]*?\.{0})\1".format(extension),
+                             resp.text)
+
+urls=set()
+for match in links_match:
+    # [1] is to select contents of second paranthesis
+    url = match[1]
+    # if the url is a full url
+    if re.match(r"(https?|ftps?)://",url) is not None:
+        urls.add(url)
+    # if the url is relative to the base url
+    elif url.startswith(r'/'):
+        # url[1:] strips leading slash
+        urls.add(base_url+url[1:])
+    else:
+        urls.add(parent_dir_url+url)
+
+file_list = open('.dllist','w')
+file_list.writelines([url+'\n' for url in urls])
+file_list.close()
+subprocess.call(['aria2c','-i','.dllist'])
+
